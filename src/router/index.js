@@ -18,6 +18,12 @@ const routes = [
     name: 'Statistics',
     component: () => import('../views/Statistics.vue'),
     meta: { title: '统计分析' }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('../views/SettingsView.vue'),
+    meta: { title: '设置' }
   }
 ]
 

@@ -1,77 +1,64 @@
 /* 全局样式 - 记账APP */
 
-/* 基础重置 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* 浅色主题（默认） */
+:root,
+[data-theme="light"] {
+  --bg-primary: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-hover: #f5f7fa;
+  --text-primary: #303133;
+  --text-secondary: #909399;
+  --text-muted: #c0c4cc;
+  --border-color: #e4e7ed;
+  --border-light: #f0f0f0;
+  --border-hairline: #fafafa;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --blue: #409eff;
+  --red: #f56c6c;
+  --green: #67c23a;
+  --orange: #e6a23c;
 }
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-card: #252540;
+  --bg-sidebar: #1e1e35;
+  --bg-hover: #2a2a45;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #6a6a7a;
+  --border-color: #3a3a55;
+  --border-light: #333350;
+  --border-hairline: #2a2a45;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --blue: #66b1ff;
+  --red: #f78989;
+  --green: #85ce61;
+  --orange: #ebb563;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  color: #303133;
-  background: #f5f7fa;
+  color: var(--text-primary);
+  background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+.el-card { border-radius: 8px !important; border-color: var(--border-color) !important; background: var(--bg-card) !important; color: var(--text-primary); }
+.el-button { border-radius: 6px !important; }
+.el-input__inner, .el-input__wrapper { border-radius: 6px !important; background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
+.el-radio-button__inner { border-radius: 6px !important; background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
 
-::-webkit-scrollbar-thumb {
-  background: #c0c4cc;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #909399;
-}
-
-/* Element Plus 主题微调 */
-.el-card {
-  border-radius: 8px !important;
-  border: 1px solid #e4e7ed !important;
-}
-
-.el-button {
-  border-radius: 6px !important;
-}
-
-.el-input__inner,
-.el-input__wrapper {
-  border-radius: 6px !important;
-}
-
-.el-radio-button__inner {
-  border-radius: 6px !important;
-}
-
-/* 数字金额等宽字体 */
-.amount-text {
-  font-family: 'Courier New', 'Consolas', monospace;
-  font-variant-numeric: tabular-nums;
-}
-
-/* 页面通用标题 */
-.page-title {
-  margin: 0 0 20px 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #303133;
-}
-
-/* 卡片间距 */
-.card-gap {
-  margin-bottom: 16px;
-}
+.amount-text { font-family: 'Courier New', 'Consolas', monospace; font-variant-numeric: tabular-nums; }
+.page-title { margin: 0 0 20px 0; font-size: 22px; font-weight: 600; color: var(--text-primary); }
+.card-gap { margin-bottom: 16px; }

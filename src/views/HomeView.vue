@@ -49,8 +49,10 @@
         value-format="YYYY-MM"
         style="width:160px"
       />
+      <el-input v-model="filters.keyword" placeholder="🔍 搜索备注..." clearable style="width:160px" @clear="loadTransactions" @keyup.enter="loadTransactions" />
       <el-button @click="loadTransactions" type="primary" plain>筛选</el-button>
       <el-button @click="resetFilters" plain>重置</el-button>
+      <el-button @click="exportCurrentCSV" plain>📥 导出</el-button>
     </div>
 
     <!-- 账单列表 -->
@@ -156,7 +158,8 @@ const summary = ref(null)
 const filters = reactive({
   type: '',
   category_l1: '',
-  dateRange: ''
+  dateRange: '',
+  keyword: ''
 })
 
 // 编辑相关
@@ -228,7 +231,23 @@ function resetFilters() {
   filters.type = ''
   filters.category_l1 = ''
   filters.dateRange = ''
+  filters.keyword = ''
   loadTransactions()
+}
+
+// 导出当前筛选结果为 CSV
+function exportCurrentCSV() {
+  let csv = '﻿类型,金额,一级分类,二级分类,日期,备注\n'
+  transactions.value.forEach(t => {
+    csv += `${t.type === 'expense' ? '支出' : '收入'},${t.amount},${t.category_l1},${t.category_l2},${t.date},${t.note || ''}\n`
+  })
+  if (transactions.value.length === 0) { ElMessage.warning('没有数据可导出'); return }
+  const blob = new Blob([csv], { type: 'text/csv' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = `记账数据_${new Date().toISOString().slice(0,10)}.csv`; a.click()
+  URL.revokeObjectURL(url)
+  ElMessage.success('CSV 已导出')
 }
 
 // 格式化金额

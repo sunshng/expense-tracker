@@ -152,7 +152,7 @@ impl Database {
 
     /// 插入默认两级分类
     fn insert_default_categories(conn: &Connection) -> Result<(), String> {
-        let categories = vec![
+        let expense_categories = vec![
             ("餐饮", "🍽️", vec!["早餐", "午餐", "晚餐", "零食饮料", "聚餐请客", "外卖"]),
             ("交通", "🚗", vec!["公交地铁", "出租车/网约车", "高铁/火车", "飞机", "加油", "停车费"]),
             ("购物", "🛒", vec!["日用品", "数码产品", "家居用品", "宠物用品", "办公用品"]),
@@ -164,9 +164,16 @@ impl Database {
             ("服饰", "👗", vec!["衣服", "鞋子", "包包", "饰品", "化妆品"]),
             ("亲子", "👶", vec!["奶粉", "尿布", "玩具", "教育"]),
             ("人情", "🎁", vec!["送礼", "红包", "捐款", "婚礼份子"]),
-            ("收入", "💰", vec!["工资", "奖金", "兼职", "投资收益", "红包收入", "退款", "其他收入"]),
-            ("其他", "🔧", vec!["不确定分类"]),
+            ("其他支出", "🔧", vec!["不确定分类"]),
         ];
+        let income_categories = vec![
+            ("收入", "💰", vec![
+                "工资薪金", "年终奖金", "绩效提成", "兼职收入", "自由职业",
+                "经营收入", "投资收益", "理财收益", "租金收入", "生活补贴",
+                "红包收入", "礼金收入", "报销退款", "出售闲置", "其他收入"
+            ]),
+        ];
+        let categories: Vec<(&str, &str, Vec<&str>)> = expense_categories.into_iter().chain(income_categories.into_iter()).collect();
 
         for (idx, (name, icon, children)) in categories.iter().enumerate() {
             conn.execute(

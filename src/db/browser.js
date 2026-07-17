@@ -4,16 +4,19 @@ import Dexie from 'dexie'
 // 创建数据库
 const db = new Dexie('ExpenseTracker')
 
-// 定义表结构
-db.version(1).stores({
+// 定义表结构（v2：清除旧分类，避免重复）
+db.version(2).stores({
   transactions: '++id, type, category_l1, category_l2, date, amount',
   categories: '++id, parent_id, name, sort_order'
+}).upgrade(async tx => {
+  // 清除旧分类数据（修复重复问题）
+  await tx.table('categories').clear()
 })
 
 // ==================== 分类操作 ====================
 
-// 初始化默认分类
-const DEFAULT_CATEGORIES = [
+// 初始化默认分类（避免重复：支出12类 + 收入1类）
+const EXPENSE_CATEGORIES = [
   { name: '餐饮', icon: '🍽️', children: ['早餐', '午餐', '晚餐', '零食饮料', '聚餐请客', '外卖'] },
   { name: '交通', icon: '🚗', children: ['公交地铁', '出租车/网约车', '高铁/火车', '飞机', '加油', '停车费'] },
   { name: '购物', icon: '🛒', children: ['日用品', '数码产品', '家居用品', '宠物用品', '办公用品'] },
@@ -25,8 +28,15 @@ const DEFAULT_CATEGORIES = [
   { name: '服饰', icon: '👗', children: ['衣服', '鞋子', '包包', '饰品', '化妆品'] },
   { name: '亲子', icon: '👶', children: ['奶粉', '尿布', '玩具', '教育'] },
   { name: '人情', icon: '🎁', children: ['送礼', '红包', '捐款', '婚礼份子'] },
-  { name: '收入', icon: '💰', children: ['工资', '奖金', '兼职', '投资收益', '红包收入', '退款', '其他收入'] },
-  { name: '其他', icon: '🔧', children: ['不确定分类'] }
+  { name: '其他支出', icon: '🔧', children: ['不确定分类'] },
+]
+
+const INCOME_CATEGORIES = [
+  { name: '收入', icon: '💰', children: [
+    '工资薪金', '年终奖金', '绩效提成', '兼职收入', '自由职业',
+    '经营收入', '投资收益', '理财收益', '租金收入', '生活补贴',
+    '红包收入', '礼金收入', '报销退款', '出售闲置', '其他收入'
+  ]}
 ]
 
 export async function getCategories() {
@@ -34,8 +44,9 @@ export async function getCategories() {
 
   // 如果表为空，插入默认分类
   if (cats.length === 0) {
-    for (let i = 0; i < DEFAULT_CATEGORIES.length; i++) {
-      const cat = DEFAULT_CATEGORIES[i]
+    const allCategories = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES]
+    for (let i = 0; i < allCategories.length; i++) {
+      const cat = allCategories[i]
       const parentId = await db.categories.put({
         name: cat.name,
         parent_id: null,
